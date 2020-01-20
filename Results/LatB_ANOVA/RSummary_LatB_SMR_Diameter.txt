@@ -1,0 +1,38 @@
+Analysis is performed for all replicates of LatB treatments measured with SMR for parameter diameter
+ 
+Overview of data groups
+factor	count	mean	sd
+ctrl	5	13.223	0.174
+tr1	3	13.315	0.0891
+tr2	3	13.203	0.221
+tr3	3	13.225	0.0834
+tr4	3	13.084	0.178
+tr5	3	12.861	0.0615
+tr6	3	12.837	0.059
+ 
+Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(>F)
+group  6  0.4656 0.8237
+      16               
+ 
+Summary of AOV, Size ~ factor
+            Df Sum Sq Mean Sq F value  Pr(>F)   
+factor       6 0.6655 0.11092   5.427 0.00313 **
+Residuals   16 0.3270 0.02044                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+ 
+
+	Pairwise comparisons using t tests with pooled SD 
+
+data:  data$Size and data$LatB 
+
+      0     0.001 0.005 0.01  0.025 0.05 
+0.001 0.512 -     -     -     -     -    
+0.005 0.892 0.489 -     -     -     -    
+0.01  0.983 0.558 0.892 -     -     -    
+0.025 0.354 0.137 0.487 0.394 -     -    
+0.05  0.017 0.014 0.026 0.020 0.142 -    
+0.1   0.014 0.014 0.020 0.018 0.118 0.892
+
+P value adjustment method: BH 

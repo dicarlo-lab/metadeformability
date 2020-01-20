@@ -1,0 +1,38 @@
+Analysis is performed for all replicates of osmolarity treatments measured with SMR for parameter diameter
+ 
+Overview of data groups
+factor	count	mean	sd
+ctrl	5	13.068	0.132
+hyper1	3	12.379	0.185
+hyper2	3	11.533	0.0955
+hyper3	3	11.113	0.173
+hyper4	3	10.781	0.0939
+hypo1	3	13.562	0.293
+hypo2	3	13.39	0.223
+ 
+Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(>F)
+group  6  0.3643 0.8909
+      16               
+ 
+Summary of AOV, Size ~ factor
+            Df Sum Sq Mean Sq F value   Pr(>F)    
+factor       6 24.202   4.034   127.9 1.32e-12 ***
+Residuals   16  0.505   0.032                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+ 
+
+	Pairwise comparisons using t tests with pooled SD 
+
+data:  data$Size and data$Osm 
+
+    200     250     300     400     500     600    
+250 0.25296 -       -       -       -       -      
+300 0.02716 0.00191 -       -       -       -      
+400 5.1e-06 7.5e-07 9.7e-05 -       -       -      
+500 2.1e-09 6.5e-10 5.9e-09 3.8e-05 -       -      
+600 1.6e-10 6.7e-11 2.5e-10 3.4e-07 0.01221 -      
+700 4.6e-11 3.8e-11 4.6e-11 1.5e-08 0.00012 0.03793
+
+P value adjustment method: BH 

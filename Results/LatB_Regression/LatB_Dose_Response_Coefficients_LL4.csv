@@ -1,0 +1,13 @@
+"Coef","Method","Values"
+"Slope:(Intercept)","SMR",-4.47649293271068
+"Lower:(Intercept)","SMR",1.0349933032451
+"Upper:(Intercept)","SMR",1.46111102697507
+"ED50:(Intercept)","SMR",11.9191194195834
+"Slope:(Intercept)","RTDC",-2.06911517076965
+"Lower:(Intercept)","RTDC",0.99891865361625
+"Upper:(Intercept)","RTDC",1.51963738210475
+"ED50:(Intercept)","RTDC",14.8468915506138
+"Slope:(Intercept)","DC",8.70949083558309
+"Lower:(Intercept)","DC",0.95734399000908
+"Upper:(Intercept)","DC",1.0286013304221
+"ED50:(Intercept)","DC",78.2365948051287

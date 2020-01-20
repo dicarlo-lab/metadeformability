@@ -1,0 +1,38 @@
+Analysis is performed for all replicates of LatB treatments measured with RTDC for parameter diameter
+ 
+Overview of data groups
+factor	count	mean	sd
+ctrl	5	13.756	0.0858
+tr1	5	13.665	0.118
+tr2	5	13.775	0.066
+tr3	5	13.893	0.0377
+tr4	5	13.862	0.136
+tr5	5	13.635	0.117
+tr6	5	13.549	0.0716
+ 
+Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(>F)
+group  6  0.8555  0.539
+      28               
+ 
+Summary of AOV, Size ~ factor
+            Df Sum Sq Mean Sq F value  Pr(>F)    
+factor       6 0.4652 0.07753   8.445 2.8e-05 ***
+Residuals   28 0.2571 0.00918                    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+ 
+
+	Pairwise comparisons using t tests with pooled SD 
+
+data:  data$Size and data$LatB 
+
+      0       0.001   0.005   0.01    0.025   0.05   
+0.001 0.18851 -       -       -       -       -      
+0.005 0.75537 0.11938 -       -       -       -      
+0.01  0.06542 0.00299 0.10619 -       -       -      
+0.025 0.12554 0.00762 0.19409 0.65665 -       -      
+0.05  0.10592 0.65665 0.06542 0.00143 0.00299 -      
+0.1   0.00583 0.10630 0.00299 8.9e-05 0.00018 0.19409
+
+P value adjustment method: BH 

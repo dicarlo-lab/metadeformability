@@ -1,0 +1,83 @@
+%%%%% SUMMARY LatB DOSE-RESPONSE DC %%%%%
+
+A 'drc' model.
+
+Call:
+drm(formula = Relative_Deformability ~ LatB, data = DC.LatB,     fct = LL.4(names = c("Slope", "Lower", "Upper", "ED50")),     na.action = na.omit)
+
+Coefficients:
+Slope:(Intercept)  Lower:(Intercept)  Upper:(Intercept)   ED50:(Intercept)  
+           8.7095             0.9573             1.0286            78.2366  
+
+
+Model fitted: Log-logistic (ED50 as parameter) (4 parms)
+
+Parameter estimates:
+
+                    Estimate Std. Error t-value   p-value    
+Slope:(Intercept)   8.709491  39.383917  0.2211    0.8269    
+Lower:(Intercept)   0.957344   0.203934  4.6944 9.033e-05 ***
+Upper:(Intercept)   1.028601   0.013234 77.7261 < 2.2e-16 ***
+ED50:(Intercept)   78.236595 170.460845  0.4590    0.6504    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error:
+
+ 0.06294686 (24 degrees of freedom)
+ 
+%%%%% SUMMARY LatB DOSE-RESPONSE RTDC %%%%%
+
+A 'drc' model.
+
+Call:
+drm(formula = Relative_Deformability ~ LatB, data = RTDC.LatB,     fct = LL.4(names = c("Slope", "Lower", "Upper", "ED50")),     na.action = na.omit)
+
+Coefficients:
+Slope:(Intercept)  Lower:(Intercept)  Upper:(Intercept)   ED50:(Intercept)  
+          -2.0691             0.9989             1.5196            14.8469  
+
+
+Model fitted: Log-logistic (ED50 as parameter) (4 parms)
+
+Parameter estimates:
+
+                   Estimate Std. Error t-value   p-value    
+Slope:(Intercept) -2.069115   0.553904 -3.7355 0.0007574 ***
+Lower:(Intercept)  0.998919   0.026197 38.1308 < 2.2e-16 ***
+Upper:(Intercept)  1.519637   0.040272 37.7345 < 2.2e-16 ***
+ED50:(Intercept)  14.846892   2.561740  5.7956 2.197e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error:
+
+ 0.08355329 (31 degrees of freedom)
+ 
+%%%%% SUMMARY LatB DOSE-RESPONSE SMR %%%%%
+
+A 'drc' model.
+
+Call:
+drm(formula = Relative_Deformability ~ LatB, data = SMR.LatB,     fct = LL.4(names = c("Slope", "Lower", "Upper", "ED50")),     na.action = na.omit)
+
+Coefficients:
+Slope:(Intercept)  Lower:(Intercept)  Upper:(Intercept)   ED50:(Intercept)  
+           -4.476              1.035              1.461             11.919  
+
+
+Model fitted: Log-logistic (ED50 as parameter) (4 parms)
+
+Parameter estimates:
+
+                   Estimate Std. Error t-value   p-value    
+Slope:(Intercept) -4.476493   4.613199 -0.9704    0.3441    
+Lower:(Intercept)  1.034993   0.029311 35.3104 < 2.2e-16 ***
+Upper:(Intercept)  1.461111   0.036792 39.7124 < 2.2e-16 ***
+ED50:(Intercept)  11.919119   2.432180  4.9006  9.93e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error:
+
+ 0.08982946 (19 degrees of freedom)

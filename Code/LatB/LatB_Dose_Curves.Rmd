@@ -1,0 +1,560 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+## Load libraries
+```{r}
+library("drc")
+library("reshape2")
+library('broom')
+library('dplyr')
+library("ggplot2")
+library("tidyr")
+```
+## Load and transform data
+```{r}
+save.figures = FALSE
+save.folder <- "../../Results/LatB_Regression"
+dir.create(save.folder, showWarnings = FALSE)
+
+
+SMR.LatB <- read.csv(file = "../../Data_Processed/LatB/LatB_SMR_Medians_Summary.csv",
+                     header = TRUE,
+                     sep = ","
+                     )
+RTDC.LatB <- read.csv(file = "../../Data_Processed/LatB/LatB_RTDC_Medians_Summary.csv",
+                      header = TRUE,
+                      sep = ","
+                      )
+DC.LatB <- read.csv(file = "../../Data_Processed/LatB/LatB_DC_Medians_Summary.csv",
+                    header = TRUE,
+                    sep = ","
+                    )
+
+
+SMR.LatB$LatB <- SMR.LatB$LatB * 1000 # ug/ml to ng/ml
+RTDC.LatB$LatB <- RTDC.LatB$LatB * 1000 # ug/ml to ng/ml
+DC.LatB$LatB <- DC.LatB$LatB * 1000 # ug/ml to ng/ml
+```
+
+```{r}
+f.test <- function(joint.model, separate.models){
+    joint.model.residuals <- joint.model[["predres"]]
+    joint.model.residuals <- data.frame(joint.model.residuals)
+    separate.models.residuals <- separate.models[["predres"]]
+    separate.models.residuals <- data.frame(separate.models.residuals)
+    
+    FTest.Tbl <- matrix(nrow = 6, ncol = 2)
+    dimnames(FTest.Tbl) <- list(
+        c(
+            "JointModel",
+            "SeparateModel",
+            "Difference",
+            "RelativeDifference",
+            "Ratio(F)",
+            "p-value"
+            ),
+        c("SS",
+          "df"
+          )
+        )
+    FTest.Tbl["JointModel", "SS"] <- sum(joint.model.residuals$Residuals ^ 2)
+    FTest.Tbl["JointModel", "df"] <- joint.model$sumList$df.residual
+    FTest.Tbl["SeparateModel", "SS"] <- sum(separate.models.residuals$Residuals ^ 2)
+    FTest.Tbl["SeparateModel", "df"] <- separate.models$sumList$df.residual
+    FTest.Tbl["Difference", "SS"] <- FTest.Tbl["JointModel", "SS"] - FTest.Tbl["SeparateModel", "SS"]
+    FTest.Tbl["Difference", "df"] <- FTest.Tbl["JointModel", "df"] - FTest.Tbl["SeparateModel", "df"]
+    FTest.Tbl["RelativeDifference", "SS"] <- 100 * FTest.Tbl["Difference", "SS"] / FTest.Tbl["SeparateModel", "SS"]
+    FTest.Tbl["RelativeDifference", "df"] <- 100 * FTest.Tbl["Difference", "df"] / FTest.Tbl["SeparateModel", "df"]
+    FTest.Tbl["Ratio(F)", "SS"] <- FTest.Tbl["RelativeDifference", "SS"] / FTest.Tbl["RelativeDifference", "df"]
+    FTest.Tbl["p-value", "SS"] <-  pf(FTest.Tbl["Ratio(F)", "SS"], FTest.Tbl["Difference", "df"], FTest.Tbl["SeparateModel", "df"], lower.tail = FALSE)
+    
+    return(FTest.Tbl)
+}
+
+```
+
+```{r}
+# run model.
+SMR.LatB.LL.4 <- drm(
+    data = SMR.LatB,
+    formula = Relative_Deformability ~ LatB,
+    fct = LL.4(names = c("Slope", "Lower", "Upper", "ED50")),
+    na.action = na.omit
+    )
+# run model.
+RTDC.LatB.LL.4 <- drm(
+    data = RTDC.LatB,
+    formula = Relative_Deformability ~ LatB,
+    fct = LL.4(names = c("Slope", "Lower", "Upper", "ED50")),
+    na.action = na.omit
+    )
+# run model.
+DC.LatB.LL.4 <- drm(
+    data = DC.LatB,
+    formula = Relative_Deformability ~ LatB,
+    fct = LL.4(names = c("Slope", "Lower", "Upper", "ED50")),
+    na.action = na.omit
+    )
+
+
+All.Def.LatB.LL.4.coeff <- rbind(
+    tidy(SMR.LatB.LL.4[['coefficients']]),
+    tidy(RTDC.LatB.LL.4[['coefficients']]),
+    tidy(DC.LatB.LL.4[['coefficients']])
+    )
+
+
+All.Def.LatB.LL.4.coeff$Method <- c(
+    rep("SMR", 4),
+    rep("RTDC", 4),
+    rep("DC", 4)
+    )
+
+All.Def.LatB.LL.4.coeff <- rename(All.Def.LatB.LL.4.coeff, 'Coef' = 'names')
+
+All.Def.LatB.LL.4.coeff <- rename(All.Def.LatB.LL.4.coeff, 'Values' = 'x')
+# Reorder columns
+All.Def.LatB.LL.4.coeff <- All.Def.LatB.LL.4.coeff[, c(1, 3, 2)]
+
+
+# Open csv.file
+csv.file <- file(file.path(save.folder, "LatB_Dose_Response_Coefficients_LL4.csv"), "wb")
+write.csv(
+    All.Def.LatB.LL.4.coeff,
+    file = csv.file,
+    row.names = FALSE,
+)
+# Close csv.file
+close(csv.file)
+
+All.Def.LatB.LL.4.confint <- rbind(
+    tidy(confint(SMR.LatB.LL.4)),
+    tidy(confint(RTDC.LatB.LL.4)),
+    tidy(confint(DC.LatB.LL.4))
+    )
+
+All.Def.LatB.LL.4.confint$Method <- c(
+    rep("SMR", 4),
+    rep("RTDC", 4),
+    rep("DC", 4)
+    )
+
+All.Def.LatB.LL.4.confint <- rename(All.Def.LatB.LL.4.confint, 'Coef' = '.rownames')
+
+All.Def.LatB.LL.4.confint <- rename(All.Def.LatB.LL.4.confint, '2.5%' = 'X2.5..')
+
+All.Def.LatB.LL.4.confint <- rename(All.Def.LatB.LL.4.confint, '97.5%' = 'X97.5..')
+# Reorder columns
+All.Def.LatB.LL.4.confint <- All.Def.LatB.LL.4.confint[, c(1, 4, 2, 3)]
+
+
+# Open csv.file
+csv.file <- file(file.path(save.folder, "LatB_Dose_Response_ConfInt_LL4.csv"), "wb")
+write.csv(
+    All.Def.LatB.LL.4.confint,
+    file = csv.file,
+    row.names = FALSE
+)
+# Close csv.file
+close(csv.file)
+
+
+summary.file.path <- file.path(save.folder, "LatB_Dose_Response_Fitting_Summary.txt")
+# Open summary.file
+summary.file <- file(summary.file.path, "wb")
+write(
+    "%%%%% SUMMARY LatB DOSE-RESPONSE DC %%%%%",
+    file = summary.file
+)
+capture.output(
+    DC.LatB.LL.4,
+    file = summary.file,
+    append = TRUE
+)
+capture.output(
+    summary(DC.LatB.LL.4),
+    file = summary.file,
+    append = TRUE
+)
+write(
+    " ",
+    file = summary.file,
+    append = TRUE
+)
+
+write(
+    "%%%%% SUMMARY LatB DOSE-RESPONSE RTDC %%%%%",
+    file = summary.file,
+    append = TRUE
+)
+capture.output(
+    RTDC.LatB.LL.4,
+    file = summary.file,
+    append = TRUE
+)
+capture.output(
+    summary(RTDC.LatB.LL.4),
+    file = summary.file,
+    append = TRUE
+)
+write(
+    " ",
+    file = summary.file,
+    append = TRUE
+)
+
+write(
+    "%%%%% SUMMARY LatB DOSE-RESPONSE SMR %%%%%",
+    file = summary.file,
+    append = TRUE
+)
+capture.output(
+    SMR.LatB.LL.4,
+    file = summary.file,
+    append = TRUE
+)
+capture.output(
+    summary(SMR.LatB.LL.4),
+    file = summary.file,
+    append = TRUE
+)
+# Close summary.file
+close(summary.file)
+```
+## Predictions and confidence intervals.
+```{r}
+# SMR.LatB.fits <- expand.grid(LatB=10^(seq(-4, -1, length=100)))
+# SMR.LatB.fits[1,1]<- 0
+SMR.LatB.fits <- expand.grid(LatB = (seq(0, 100, length = 100)))
+# new data with predictions
+suppressWarnings(
+    pm <- predict(
+        SMR.LatB.LL.4, 
+        newdata=SMR.LatB.fits, 
+        interval="confidence",
+        level = 0.95
+        )
+)
+SMR.LatB.fits$p <- pm[, 1]
+SMR.LatB.fits$pmin <- pm[, 2]
+SMR.LatB.fits$pmax <- pm[, 3]
+# predictions and confidence intervals.
+RTDC.LatB.fits <- expand.grid(LatB=(seq(0, 100, length = 100))) 
+# new data with predictions
+suppressWarnings(
+    pm <- predict(
+        RTDC.LatB.LL.4, 
+        newdata=RTDC.LatB.fits, 
+        interval="confidence"
+        )
+)
+RTDC.LatB.fits$p <- pm[, 1]
+RTDC.LatB.fits$pmin <- pm[, 2]
+RTDC.LatB.fits$pmax <- pm[, 3]
+# predictions and confidence intervals.
+DC.LatB.fits <- expand.grid(LatB = (seq(0, 100, length = 100))) 
+# new data with predictions
+suppressWarnings(
+    pm <- predict(
+        DC.LatB.LL.4, 
+        newdata=RTDC.LatB.fits, 
+        interval="confidence"
+        ) 
+)
+DC.LatB.fits$p <- pm[, 1]
+DC.LatB.fits$pmin <- pm[, 2]
+DC.LatB.fits$pmax <- pm[, 3]
+
+
+# All.Def.LatB.fits.SMR <- data.frame(Method = "SMR", SMR.LatB.fits)
+# All.Def.LatB.fits.RTDC <- data.frame(Method = "RTDC", RTDC.LatB.fits)
+# All.Def.LatB.fits.DC <- data.frame(Method = "DC", DC.LatB.fits)
+All.Def.LatB.fits <- rbind(
+    SMR.LatB.fits,
+    RTDC.LatB.fits,
+    DC.LatB.fits
+    )
+All.Def.LatB.fits$Method <- c(
+    rep("SMR", nrow(SMR.LatB.fits)),
+    rep("RTDC", nrow(RTDC.LatB.fits)),
+    rep("DC", nrow(DC.LatB.fits))
+    )
+
+
+All.Def.LatB <- rbind(SMR.LatB, RTDC.LatB, DC.LatB)
+All.Def.LatB$Method <- c(
+    rep("SMR", nrow(SMR.LatB)),
+    rep("RTDC", nrow(RTDC.LatB)),
+    rep("DC",nrow(DC.LatB))
+    )
+```
+
+```{r}
+summary(SMR.LatB.LL.4)
+confint(SMR.LatB.LL.4)
+```
+
+```{r}
+ggplot(All.Def.LatB, aes(x = LatB, y = Relative_Deformability, group = Method, col = Method)) +
+    geom_point() +
+    geom_ribbon(data = All.Def.LatB.fits, aes(x = LatB, y = p, ymin = pmin, ymax = pmax), alpha = 0.2) +
+    geom_line(data = All.Def.LatB.fits, aes(x = LatB, y = p)) +
+    scale_color_manual(values = c("#FCB014", "#57B36C", "#A23389")) + 
+    scale_x_log10() +
+    ggtitle("LatB Dose Response")
+```
+
+```{r}
+SMR.RTDC.Def.LatB <- rbind(SMR.LatB, RTDC.LatB)
+SMR.RTDC.Def.LatB$Method<-c(
+    rep("SMR",nrow(SMR.LatB)),
+    rep("RTDC",nrow(RTDC.LatB))
+    )
+SMR.RTDC.Def.LatB.LL4 <- drm(
+    formula = Relative_Deformability ~ LatB, 
+    fct = LL.4(), 
+    data = SMR.RTDC.Def.LatB, 
+    na.action = na.omit
+    )
+
+# predictions and confidence intervals.
+SMR.RTDC.Def.LatB.fits <- expand.grid(LatB = (seq(0, 100, length = 100))) 
+suppressWarnings(
+    pm <- predict(
+        SMR.RTDC.Def.LatB.LL4, 
+        newdata = SMR.RTDC.Def.LatB.fits, 
+        interval = "confidence"
+        )
+)
+SMR.RTDC.Def.LatB.fits$p <- pm[, 1]
+SMR.RTDC.Def.LatB.fits$pmin <- pm[, 2]
+SMR.RTDC.Def.LatB.fits$pmax <- pm[, 3]
+
+summary(SMR.RTDC.Def.LatB.LL4)
+```
+
+```{r}
+SMR.RTDC.Def.LatB.Sep.LL4 <- drm(
+    formula = Relative_Deformability ~ LatB, 
+    curveid = Method, 
+    fct = LL.4(), 
+    data = SMR.RTDC.Def.LatB, 
+    na.action = na.omit
+    )
+
+
+if (save.figures){
+    setEPS()
+    postscript(file.path(save.folder, "LatB_Dose_Response_SMR-RTDC_Joint.eps"))
+}
+plot(
+    SMR.RTDC.Def.LatB.LL4,
+    col = c('#0072BD', '#D95319', '#EDB120'),
+    type = 'all',
+    pch = 1,
+    lty = 1,
+    lwd = 2,
+    cex = 1.2,
+    broken = TRUE
+    )
+garbage <- dev.off()
+# ^ Use to suppress print statement
+
+if (save.figures){
+    setEPS()
+    postscript(file.path(save.folder, "LatB_Dose_Response_SMR-RTDC_Sep.eps"))
+}
+plot(
+    SMR.RTDC.Def.LatB.Sep.LL4,
+    col = c('#0072BD', '#D95319', '#EDB120'),
+    type = 'all',
+    pch = 1,
+    lty = 1,
+    lwd = 2,
+    cex = 1.2,
+    broken = TRUE
+    )
+garbage <- dev.off()
+
+
+cat("\n")
+cat("SMR-RTDC F Test Comparison:\n")
+SMR.RTDC.Def.LatB.LL4.Tbl <- f.test(SMR.RTDC.Def.LatB.LL4, SMR.RTDC.Def.LatB.Sep.LL4)
+print(SMR.RTDC.Def.LatB.LL4.Tbl)
+
+# Open csv.file
+csv.file <- file(file.path(save.folder, "SMR-RTDC_LatB_LL4_F-Test.csv"), "wb")
+write.csv(
+    SMR.RTDC.Def.LatB.LL4.Tbl,
+    file = csv.file,
+)
+# Close csv.file
+close(csv.file)
+```
+
+```{r}
+SMR.DC.Def.LatB <- rbind(SMR.LatB, DC.LatB)
+SMR.DC.Def.LatB$Method <- c(
+    rep("SMR", nrow(SMR.LatB)),
+    rep("DC", nrow(DC.LatB))
+    )
+SMR.DC.Def.LatB.LL4 <- drm(
+    formula = Relative_Deformability ~ LatB,
+    fct = LL.4(), 
+    data = SMR.DC.Def.LatB, 
+    na.action = na.omit
+    )
+# predictions and confidence intervals.
+SMR.DC.Def.LatB.fits <- expand.grid(LatB = (seq(0, 100, length = 100))) 
+suppressWarnings(
+    pm <- predict(
+        SMR.DC.Def.LatB.LL4,
+        newdata = SMR.DC.Def.LatB.fits, 
+        interval = "confidence"
+        )
+    )
+SMR.DC.Def.LatB.fits$p <- pm[, 1]
+SMR.DC.Def.LatB.fits$pmin <- pm[, 2]
+SMR.DC.Def.LatB.fits$pmax <- pm[, 3]
+
+
+SMR.DC.Def.LatB.Sep.LL4 <- drm(
+    formula = Relative_Deformability ~ LatB,
+    curveid = Method, 
+    fct = LL.4(), 
+    data = SMR.DC.Def.LatB,
+    na.action = na.omit
+    )
+
+
+if (save.figures){
+    setEPS()
+    postscript(file.path(save.folder, "LatB_Dose_Response_SMR-DC_Joint.eps"))
+}
+plot(
+    SMR.DC.Def.LatB.LL4,
+    col = c('#0072BD', '#D95319', '#EDB120'),
+    type = 'all',
+    pch = 1, 
+    lty = 1, 
+    lwd = 2, 
+    cex = 1.2, 
+    broken = TRUE
+    )
+garbage <- dev.off()
+
+
+if (save.figures){
+    setEPS()
+    postscript(file.path(save.folder, "LatB_Dose_Response_SMR-DC_Sep.eps"))
+}
+plot(
+    SMR.DC.Def.LatB.Sep.LL4,
+    col = c('#0072BD', '#D95319', '#EDB120'),
+    type = 'all',
+    pch = 1,
+    lty = 1,
+    lwd = 2,
+    cex = 1.2,
+    broken = TRUE
+    )
+garbage <- dev.off()
+
+
+cat("\n")
+cat("SMR-DC F Test Comparison:\n")
+SMR.DC.Def.LatB.LL4.Tbl <- f.test(SMR.DC.Def.LatB.LL4, SMR.DC.Def.LatB.Sep.LL4)
+print(SMR.DC.Def.LatB.LL4.Tbl)
+
+# Open csv.file
+csv.file <- file(file.path(save.folder, "SMR-DC_LatB_LL4_F-Test.csv"), "wb")
+write.csv(
+    SMR.DC.Def.LatB.LL4.Tbl,
+    file = csv.file,
+)
+# Close csv.file
+close(csv.file)
+```
+
+```{r}
+DC.RTDC.Def.LatB <- rbind(DC.LatB, RTDC.LatB)
+DC.RTDC.Def.LatB$Method<-c(
+    rep("DC", nrow(DC.LatB)),
+    rep("RTDC", nrow(RTDC.LatB))
+    )
+DC.RTDC.Def.LatB.LL4 <- drm(Relative_Deformability ~ LatB, fct = LL.4(), data = DC.RTDC.Def.LatB, na.action = na.omit)
+# predictions and confidence intervals.
+DC.RTDC.Def.LatB.fits <- expand.grid(LatB=(seq(0, 100, length = 100)))
+suppressWarnings(
+    pm <- predict(
+        DC.RTDC.Def.LatB.LL4, 
+        newdata = DC.RTDC.Def.LatB.fits,
+        interval = "confidence"
+        )
+    )
+DC.RTDC.Def.LatB.fits$p <- pm[, 1]
+DC.RTDC.Def.LatB.fits$pmin <- pm[, 2]
+DC.RTDC.Def.LatB.fits$pmax <- pm[, 3]
+
+DC.RTDC.Def.LatB.Sep.LL4 <- drm(
+    formula = Relative_Deformability ~ LatB,
+    curveid = Method,
+    fct = LL.4(),
+    data = DC.RTDC.Def.LatB,
+    na.action = na.omit
+    )
+
+if (save.figures){
+    setEPS()
+    postscript(file.path(save.folder, "LatB_Dose_Response_DC-RTDC_Joint.eps"))
+}
+plot(
+    DC.RTDC.Def.LatB.LL4,
+    col = c('#0072BD', '#D95319', '#EDB120'),
+    type = 'all',
+    pch = 1,
+    lty = 1,
+    lwd = 2,
+    cex = 1.2,
+    broken = TRUE
+    )
+garbage <- dev.off()
+
+
+if (save.figures){
+    setEPS()
+    postscript(file.path(save.folder, "LatB_Dose_Response_DC-RTDC_Sep.eps"))
+}
+plot(
+    DC.RTDC.Def.LatB.Sep.LL4,
+    col = c('#0072BD', '#D95319', '#EDB120'),
+    type = 'all',
+    pch = 1,
+    lty = 1,
+    lwd = 2,
+    cex = 1.2,
+    broken = TRUE
+    )
+garbage <- dev.off()
+
+
+cat("\n")
+cat("DC-RTDC F Test Comparison:\n")
+DC.RTDC.Def.LatB.LL4.Tbl <- f.test(DC.RTDC.Def.LatB.LL4, DC.RTDC.Def.LatB.Sep.LL4)
+print(DC.RTDC.Def.LatB.LL4.Tbl)
+
+# Open csv.file
+csv.file <- file(file.path(save.folder, "DC-RTDC_LatB_LL4_F-Test.csv"), "wb")
+write.csv(
+    DC.RTDC.Def.LatB.LL4.Tbl,
+    file = csv.file,
+)
+# Close csv.file
+close(csv.file)
+```

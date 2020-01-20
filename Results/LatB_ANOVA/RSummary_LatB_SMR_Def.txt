@@ -1,0 +1,38 @@
+Analysis is performed for all replicates of LatB treatments measured with SMR for parameter Deformability
+ 
+Overview of data groups
+factor	count	mean	sd
+ctrl	5	32.561	1.5817
+tr1	3	34.792	2.4213
+tr2	3	34.077	0.78358
+tr3	3	38.475	1.3731
+tr4	3	46.864	4.3398
+tr5	3	47.4	6.389
+tr6	3	48.589	1.9984
+ 
+Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(>F)
+group  6   0.905 0.5155
+      16               
+ 
+Summary of AOV, Deformability ~ factor
+            Df Sum Sq Mean Sq F value   Pr(>F)    
+factor       6  995.4  165.90   17.23 3.63e-06 ***
+Residuals   16  154.0    9.63                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+ 
+
+	Pairwise comparisons using t tests with pooled SD 
+
+data:  data$Deformability and data$LatB 
+
+      0       0.001   0.005   0.01    0.025   0.05   
+0.001 0.44539 -       -       -       -       -      
+0.005 0.59852 0.82023 -       -       -       -      
+0.01  0.03060 0.23151 0.15261 -       -       -      
+0.025 7.2e-05 0.00049 0.00036 0.00772 -       -      
+0.05  7.0e-05 0.00036 0.00027 0.00539 0.83498 -      
+0.1   5.5e-05 0.00023 0.00016 0.00220 0.59852 0.71296
+
+P value adjustment method: BH 

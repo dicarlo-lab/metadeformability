@@ -1,0 +1,205 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code.
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*.
+
+```{r}
+# clear workspace
+rm(list = ls())
+
+# load libraries
+library(dplyr)
+library(DescTools)
+library(ggpubr)
+library(FSA)
+library(multcomp)
+library(car)
+
+# working directory
+wd <- list()
+# commonly used paths in my working directory
+wd$data <- "../../Data_Processed/LatB"
+wd$results <- "../../Results/LatB_ANOVA"
+
+# list all csv files in the directory
+filelist <- list.files(path = wd$data, pattern = "*.csv")
+
+options("encoding" = "UTF-8")
+```
+
+```{r}
+#select a method for which the analysis is performed
+# (1) - DC, (2) - RTDC, (3) - SMR
+i = 1
+exp.string <-
+    substr(x = filelist[i],
+           start = 1,
+           stop = (nchar(filelist[i]) - 20))
+method <-
+    substr(x = exp.string,
+           start = 6,
+           stop = nchar(exp.string))
+
+#Create txt summary file
+summary.file.path <-
+    file.path(wd$results,
+              paste("RSummary_", exp.string, "_Diameter.txt" , sep = ""))
+
+#Create pdf file for plots
+plot.file <-
+    file.path(wd$results,
+              paste("RSummary_", exp.string, "_Diameter_Plots.pdf" , sep = ""))
+
+#print intro
+intro <-
+    paste(
+        "Analysis is performed for all replicates of LatB treatments measured with",
+        method,
+        "for parameter diameter"
+    )
+# Open summary.file
+summary.file <- file(summary.file.path, "wb")
+write(noquote(intro), file = summary.file)
+cat(intro)
+
+# select color scheme
+plot.colors.all <- read.csv(file = "../plot_colors_shades.csv",
+                            header = TRUE,
+                            stringsAsFactors = FALSE)
+if (grepl("SMR", method)) {
+    plot.colors <- plot.colors.all$SMR
+} else if (grepl("RT", method))  {
+    plot.colors <- plot.colors.all$RTDC
+} else {
+    plot.colors <- plot.colors.all$DC
+}
+```
+
+```{r}
+#Read data
+data <-
+    read.delim(file = file.path(wd$data, filelist[i]),
+               header = TRUE,
+               sep = ",")
+
+write(" ", file = summary.file, append = TRUE)
+write("Overview of data groups", file = summary.file, append = TRUE)
+
+#print data summary
+v <- group_by(data, factor) %>%
+    summarise(
+        count = n(),
+        mean = format(mean(Size, na.rm = TRUE), digits = 5),
+        sd = format(sd(Size, na.rm = TRUE), digits = 3)
+    )
+write.table(
+    v,
+    file = summary.file,
+    append = TRUE,
+    quote = FALSE,
+    sep = "\t",
+    eol = "\n",
+    na = "NA",
+    dec = ".",
+    row.names = FALSE,
+    col.names = TRUE,
+    qmethod = c("escape", "double"),
+    fileEncoding = ""
+)
+write(" ", file = summary.file, append = TRUE)
+capture.output(v, file = summary.file, append = TRUE)
+```
+
+
+```{r}
+# Have a look at the data
+# Box Plot
+plot.order <- c("ctrl", "tr1", "tr2", "tr3", "tr4", "tr5", "tr6")
+
+gg1 <- ggboxplot(
+    data,
+    x = "factor",
+    y = "Size",
+    color = "factor",
+    palette = plot.colors,
+    order = plot.order,
+    ylab = expression(paste("diameter (", mu, "m)")),
+    xlab = "Treatment"
+)
+print(gg1)
+```
+
+```{r}
+# Have a look at the data
+# Line Plot connecting means, jitter of medians
+gg2 <- ggline(
+    data,
+    x = "factor",
+    y = "Size",
+    add = c("mean_se", "jitter"),
+    order = plot.order,
+    ylab = expression(paste("diameter (", mu, "m)")),
+    xlab = "Treatment"
+)
+print(gg2)
+```
+
+```{r}
+# Compute the analysis of variance
+res.aov <- aov(Size ~ factor, data = data)
+
+#Check the assumptions for analysis of varaince
+# 1. Homogeneity of variances
+plot(res.aov, 1)
+w <- leveneTest(Size ~ factor, data = data)
+print(w)
+capture.output(w, file = summary.file, append = TRUE)
+write(" ", file = summary.file, append = TRUE)
+```
+
+```{r}
+#Check the assumptions for analysis of variance
+# 2. Normality
+plot(res.aov, 2)
+gg3 <-
+    ggqqplot(data$Size, main = "Quantile-Quantile Plot, ggqqplot")
+print(gg3)
+```
+
+```{r}
+# Summary of the analysis
+introAOV <- "Summary of AOV, Size ~ factor"
+u <- summary(res.aov)
+cat(introAOV, "\n", "\n")
+print(u)
+write(noquote(introAOV), file = summary.file, append = TRUE)
+capture.output(u, file = summary.file, append = TRUE)
+write(" ", file = summary.file, append = TRUE)
+```
+
+```{r}
+# Perform the post-hoc analysis
+h <-
+    pairwise.t.test(data$Size,
+                    data$LatB,
+                    p.adjust.method = "BH",
+                    pool.sd = TRUE)
+capture.output(h, file = summary.file, append = TRUE)
+print(h)
+# Close summary.file
+close(summary.file)
+```
+
+```{r}
+# Save plots to pdf
+pdf(plot.file)
+print(gg1)
+print(gg2)
+plot(res.aov, 1)
+plot(res.aov, 2)
+print(gg3)
+dev.off()
+```

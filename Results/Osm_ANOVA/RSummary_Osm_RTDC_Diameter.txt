@@ -1,0 +1,38 @@
+Analysis is performed for all replicates of osmolarity treatments measured with RTDC for parameter diameter
+ 
+Overview of data groups
+factor	count	mean	sd
+ctrl	4	13.591	0.119
+hyper1	4	12.963	0.0537
+hyper2	4	12.661	0.138
+hyper3	4	12.108	0.0767
+hyper4	4	11.788	0.0483
+hypo1	4	13.897	0.103
+hypo2	4	14.144	0.0808
+ 
+Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(>F)
+group  6  1.4022 0.2601
+      21               
+ 
+Summary of AOV, Size ~ factor
+            Df Sum Sq Mean Sq F value Pr(>F)    
+factor       6 19.365   3.227     367 <2e-16 ***
+Residuals   21  0.185   0.009                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+ 
+
+	Pairwise comparisons using t tests with pooled SD 
+
+data:  data$Size and data$Osm 
+
+    200     250     300     400     500     600    
+250 0.00126 -       -       -       -       -      
+300 5.2e-08 0.00016 -       -       -       -      
+400 8.7e-14 6.8e-12 6.9e-09 -       -       -      
+500 1.2e-15 4.0e-14 6.9e-12 0.00018 -       -      
+600 < 2e-16 < 2e-16 1.2e-15 2.9e-11 5.2e-08 -      
+700 < 2e-16 < 2e-16 < 2e-16 8.7e-14 2.1e-11 0.00010
+
+P value adjustment method: BH 

@@ -1,0 +1,16 @@
+# Matlab files
+*.asv
+*.m~
+# R files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+# Image files
+*.png
+*.pdf
+*.eps
+*.ai
+*.jpeg
+# Mac files
+*.DS_Store

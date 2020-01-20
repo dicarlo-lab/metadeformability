@@ -1,0 +1,74 @@
+%%%%% SUMMARY Osm exponential fit DC %%%%%
+Nonlinear regression model
+  model: Relative_Deformability ~ 1 * exp((1 - Osm) * b)
+   data: Def.Osm[(Def.Osm$Method %in% c("DC")), ]
+     b 
+0.3974 
+ residual sum-of-squares: 0.02944
+
+Number of iterations to convergence: 5 
+Achieved convergence tolerance: 2.636e-07
+
+Formula: Relative_Deformability ~ 1 * exp((1 - Osm) * b)
+
+Parameters:
+  Estimate Std. Error t value Pr(>|t|)    
+b  0.39738    0.01655   24.02 1.12e-15 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.03936 on 19 degrees of freedom
+
+Number of iterations to convergence: 5 
+Achieved convergence tolerance: 2.636e-07
+
+ 
+%%%%% SUMMARY Osm exponential fit RTDC %%%%%
+Nonlinear regression model
+  model: Relative_Deformability ~ 1 * exp((1 - Osm) * b)
+   data: Def.Osm[(Def.Osm$Method %in% c("RTDC")), ]
+     b 
+0.7803 
+ residual sum-of-squares: 0.09207
+
+Number of iterations to convergence: 5 
+Achieved convergence tolerance: 4.069e-06
+
+Formula: Relative_Deformability ~ 1 * exp((1 - Osm) * b)
+
+Parameters:
+  Estimate Std. Error t value Pr(>|t|)    
+b  0.78034    0.04301   18.14 1.86e-13 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.06961 on 19 degrees of freedom
+
+Number of iterations to convergence: 5 
+Achieved convergence tolerance: 4.069e-06
+
+ 
+%%%%% SUMMARY Osm exponential fit SMR %%%%%
+Nonlinear regression model
+  model: Relative_Deformability ~ 1 * exp((1 - Osm) * b)
+   data: Def.Osm[(Def.Osm$Method %in% c("SMR")), ]
+    b 
+1.206 
+ residual sum-of-squares: 0.07023
+
+Number of iterations to convergence: 6 
+Achieved convergence tolerance: 8.081e-07
+
+Formula: Relative_Deformability ~ 1 * exp((1 - Osm) * b)
+
+Parameters:
+  Estimate Std. Error t value Pr(>|t|)    
+b  1.20557    0.06984   17.26 9.15e-12 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.06625 on 16 degrees of freedom
+
+Number of iterations to convergence: 6 
+Achieved convergence tolerance: 8.081e-07
+

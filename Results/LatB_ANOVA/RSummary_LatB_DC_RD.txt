@@ -1,0 +1,39 @@
+Analysis is performed for all replicates of LatB treatments measured with DC for parameter Realtive Deformability
+ 
+Overview of data groups
+factor	count	mean	sd
+ctrl	4	1	0
+tr1	4	1.0343	0.0696
+tr2	4	1.036	0.0585
+tr3	4	1.0568	0.0526
+tr4	4	1.0127	0.0724
+tr5	4	1.0304	0.0947
+tr6	4	0.96479	0.062
+ 
+Levene's Test for Homogeneity of Variance (center = median)
+      Df F value  Pr(>F)  
+group  6  3.7182 0.01122 *
+      21                  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+Summary of AOV, Relative_Deformability ~ factor
+            Df  Sum Sq  Mean Sq F value Pr(>F)
+factor       6 0.02170 0.003617   0.871  0.532
+Residuals   21 0.08723 0.004154               
+ 
+
+	Pairwise comparisons using t tests with pooled SD 
+
+data:  data$Relative_Deformability and data$LatB 
+
+      0    0.001 0.005 0.01 0.025 0.05
+0.001 0.86 -     -     -    -     -   
+0.005 0.86 0.97  -     -    -     -   
+0.01  0.86 0.86  0.86  -    -     -   
+0.025 0.91 0.86  0.86  0.86 -     -   
+0.05  0.86 0.97  0.97  0.86 0.87  -   
+0.1   0.86 0.86  0.86  0.86 0.86  0.86
+
+P value adjustment method: BH 

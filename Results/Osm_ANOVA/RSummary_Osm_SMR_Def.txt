@@ -1,0 +1,38 @@
+Analysis is performed for all osmolarity treatemnts measured with SMR for parameter Deformability
+ 
+Overview of data groups
+factor	count	mean	sd
+ctrl	5	40.896	4.6812
+hyper1	3	25.131	4.1564
+hyper2	3	18.261	3.2644
+hyper3	3	13.506	3.7475
+hyper4	3	8.6062	2.6665
+hypo1	3	45.752	4.5701
+hypo2	3	44.024	2.2145
+ 
+Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(>F)
+group  6  0.1906  0.975
+      16               
+ 
+Summary of AOV, Deformability ~ factor
+            Df Sum Sq Mean Sq F value   Pr(>F)    
+factor       6   4585   764.2    51.5 1.42e-09 ***
+Residuals   16    237    14.8                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+ 
+
+	Pairwise comparisons using t tests with pooled SD 
+
+data:  data$Deformability and data$Osm 
+
+    200     250     300     400     500     600    
+250 0.59045 -       -       -       -       -      
+300 0.29666 0.12795 -       -       -       -      
+400 3.5e-05 1.4e-05 6.9e-05 -       -       -      
+500 1.1e-06 5.2e-07 1.2e-06 0.05797 -       -      
+600 1.5e-07 1.0e-07 1.5e-07 0.00294 0.16586 -      
+700 3.6e-08 3.6e-08 3.6e-08 0.00013 0.01026 0.16198
+
+P value adjustment method: BH 

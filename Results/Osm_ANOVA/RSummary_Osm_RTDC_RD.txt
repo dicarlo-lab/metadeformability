@@ -1,0 +1,38 @@
+Analysis is performed for all osmolarity treatments measured with RTDC for parameter Deformability
+ 
+Overview of data groups
+factor	count	mean	sd
+ctrl	4	0.071974	0.0016732
+hyper1	4	0.059612	0.0047375
+hyper2	4	0.047042	0.0080339
+hyper3	4	0.030123	0.0037339
+hyper4	4	0.022388	0.001248
+hypo1	4	0.081466	0.0032409
+hypo2	4	0.080628	0.0030062
+ 
+Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(>F)
+group  6  1.9598 0.1177
+      21               
+ 
+Summary of AOV, Deformability ~ factor
+            Df Sum Sq Mean Sq F value   Pr(>F)    
+factor       6 2.6260  0.4377   151.8 3.49e-16 ***
+Residuals   21 0.0605  0.0029                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+ 
+
+	Pairwise comparisons using t tests with pooled SD 
+
+data:  data$Relative_Deformability and data$Osm 
+
+    200     250     300     400     500     600    
+250 0.77258 -       -       -       -       -      
+300 0.00503 0.00268 -       -       -       -      
+400 2.2e-07 1.3e-07 0.00022 -       -       -      
+500 1.1e-10 7.7e-11 1.8e-08 0.00021 -       -      
+600 9.5e-14 9.3e-14 2.6e-12 1.1e-09 5.7e-06 -      
+700 1.1e-14 1.1e-14 1.1e-13 2.1e-11 2.0e-08 0.01026
+
+P value adjustment method: BH 
