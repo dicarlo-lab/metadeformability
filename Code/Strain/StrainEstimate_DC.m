@@ -2,7 +2,7 @@ clear all
 cd(fileparts(matlab.desktop.editor.getActiveFilename))
 
 %define source path
-source_path_DC = '../../Data_Raw/Strain';
+source_path_DC = '../../Data_Raw/Strain/DC';
 
 %define path to save plots to
 saveto = '../../Data_processed/Strain';
