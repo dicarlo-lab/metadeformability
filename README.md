@@ -1,9 +1,8 @@
 # MetaDeformability
 
-This repository contains datasets and all analysis scripts necessary to generate the results presented in the paper published in _XXXXX_ by Urbanska, Muñoz _et al._:
+This repository contains datasets and all analysis scripts necessary to generate the results presented in the paper published in _Nature Methods_ by Urbanska, Muñoz _et al._:
 
-[A comparison of microfluidic methods for high-throughput cell deformability measurements](https://doi.org/)
-
+[A comparison of microfluidic methods for high-throughput cell deformability measurements](https://doi.org/10.1038/s41592-020-0818-8)
 
 ### Abstract 
 The mechanical phenotype of a cell is an inherent biophysical marker of its state and function, with potential value in clinical diagnostics.
@@ -21,6 +20,9 @@ suspended microchannel resonator,
 microfluidics,
 osmotic pressure,
 actin cytoskeleton
+
+### Citation
+> Urbanska, M., Muñoz, H.E., Shaw Bagnall, J. _et al._ A comparison of microfluidic methods for high-throughput cell deformability measurements. _Nat Methods_ (2020). https://doi.org/10.1038/s41592-020-0818-8
 
 ## Directory Structure
 
@@ -108,4 +110,4 @@ This will not affect the other packages you have installed on your computer.
 
 &nbsp;  
 &nbsp;  
-Last updated: January 20, 2020
+Last updated: April 27, 2020
