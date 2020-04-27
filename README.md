@@ -29,7 +29,7 @@ actin cytoskeleton
 ```
 ├───Code                Code needed for complete analysis
 │   ├───LatB                    Matlab scripts/R notebooks for LatB data analysis
-│   ├───Osm                     Matlab scripits/R notebooks for osmolarity data analysis
+│   ├───Osm                     Matlab scripts/R notebooks for osmolarity data analysis
 │   ├───Strain                  Matlab scripts to estimate strain per method
 │   └───Utils                   3rd party Matlab functions
 │
@@ -41,7 +41,7 @@ actin cytoskeleton
 │   ├───Strain                  Control cell measurement data for strain calculation
 │   ├───LatB_FlowRate           LatB-treated cell measurement data with different flow rates
 │   ├───LatB_HighDose           High LatB-treated cell measurement data
-│   └───Osm_Time_Response       Time response to osmolairty treatement of cells
+│   └───Osm_Time_Response       Time response to osmolarity treatment of cells
 │
 ├───Data_Processed      Processed data for figures or statistical analysis
 │   ├───LatB                    LatB-treated cell measurement with Relative Deformability
